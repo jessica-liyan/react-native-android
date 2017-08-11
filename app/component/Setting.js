@@ -27,7 +27,38 @@ export default class Setting extends Component {
         })
       }
     })
-    this.data = [{
+    this.showText = this.showText.bind(this)
+  }
+
+  onLoginOut(){
+    Alert.alert(
+      '温馨提示',
+      '确定退出吗？',
+      [
+        {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: '确定', onPress: () => {
+          console.log('OK Pressed')
+          store.delete('userInfo')
+          Actions.Home()
+        }},
+      ],
+      { cancelable: false }
+    )
+  }
+
+  showText(item){
+    console.log(item.telephone)
+    if(item.telephone){
+      return (
+        <Text style={{fontSize:14,color:'#999'}}>{item.telephone}</Text>
+      ) 
+    }else{
+      return null
+    }
+  }
+
+  render() {
+    const data = [{
       key: 0,
       txt: '我的资料',
       onPress: () => Actions.MyData()
@@ -62,44 +93,13 @@ export default class Setting extends Component {
       txt: '关于我们',
       onPress: () => Actions.AboutUs()
     }]
-    this.showText = this.showText.bind(this)
-  }
-
-  onLoginOut(){
-    Alert.alert(
-      '温馨提示',
-      '确定退出吗？',
-      [
-        {text: '取消', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: '确定', onPress: () => {
-          console.log('OK Pressed')
-          store.delete('userInfo')
-          Actions.Home()
-        }},
-      ],
-      { cancelable: false }
-    )
-  }
-
-  showText(item){
-    console.log(item.telephone)
-    if(item.telephone){
-      return (
-        <Text style={{fontSize:14,color:'#999'}}>{item.telephone}</Text>
-      ) 
-    }else{
-      return null
-    }
-  }
-
-  render() {
     return (
       <View style={styles.wrapper}>
         <FlatList
-          data={this.data}
-          renderItem={({item}) => {
+          data={data}
+          renderItem={({item, index}) => {
             return (
-              <TouchableHighlight underlayColor="#ccc" onPress={item.onPress}>
+              <TouchableHighlight underlayColor="#ccc" onPress={item.onPress} style={index == 4? {marginTop: 10 }:null}>
                 <View style={styles.item}>
                   <Text style={styles.itemText}>{item.txt}</Text>
                   <View style={{flexDirection:'row'}}>

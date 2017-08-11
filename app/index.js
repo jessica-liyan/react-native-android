@@ -5,7 +5,9 @@ import {
   View,
   Text,
   StatusBar,
-  Platform
+  Platform,
+  TouchableOpacity,
+  DeviceEventEmitter
 } from 'react-native';
 import {
   Scene,
@@ -29,6 +31,9 @@ import ModifyTel from './component/ModifyTel'
 import OpinionFeedback from './component/OpinionFeedback'
 import Questions from './component/Questions'
 import AboutUs from './component/AboutUs'
+import MyMessage from './component/MyMessage'
+import ChangeHeadPic from './component/ChangeHeadPic'
+import SetHeadPic from './component/SetHeadPic'
 import MovieDetail from './component/MovieDetail'
 import MovieListTab from './component/MovieListTab'
 import MovieTopTab from './component/MovieTopTab'
@@ -153,9 +158,18 @@ export default class App extends Component {
                   )
                 }}
                 navigationBarStyle={[styles.navigationBarStyle,{paddingLeft:30}]}
-                onRight={() => Actions.Setting()} 
-                rightButtonImage={require('./image/setting.png')}  
-                rightButtonIconStyle={styles.rightButton} 
+                renderRightButton={()=>{
+                  return (
+                    <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                      <TouchableOpacity onPress={() => Actions.Setting()} style={{flex:1}}>
+                        <Image source={require('./image/setting.png')} style={styles.button}/>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => Actions.MyMessage()} style={{flex:1}}>
+                        <Image source={require('./image/message.png')} style={styles.button}/>
+                      </TouchableOpacity>
+                    </View>  
+                  )
+                }}
               />
             </Scene>
             <Scene key="search" component={SearchItem} title="search" hideNavBar>
@@ -272,6 +286,38 @@ export default class App extends Component {
               backButtonImage={require('./image/back.png')} 
               component={AboutUs}>
             </Scene>
+            <Scene 
+              key="MyMessage" 
+              title="我的消息"
+              navigationBarStyle={[styles.navigationBarStyle,{paddingRight:30}]}
+              titleStyle={styles.titleStyle}
+              backButtonImage={require('./image/back.png')} 
+              component={MyMessage}>
+            </Scene>
+            <Scene 
+              key="ChangeHeadPic" 
+              title="更换头像"
+              navigationBarStyle={{backgroundColor: '#333',paddingRight:30}} 
+              titleStyle={styles.titleStyle} 
+              backButtonImage={require('./image/back.png')} 
+              component={ChangeHeadPic}>
+            </Scene>
+            <Scene 
+              key="SetHeadPic" 
+              title="设置头像"
+              component={SetHeadPic}
+              navigationBarStyle={{backgroundColor: '#333',paddingRight:30}} 
+              titleStyle={styles.titleStyle} 
+              backButtonImage={require('./image/back.png')} 
+              renderRightButton={()=>{
+                  return (
+                    <TouchableOpacity onPress={DeviceEventEmitter.emit('updateHeadPic')} style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+                      <Text style={styles.rightText}>完成</Text>
+                    </TouchableOpacity>
+                  )
+                }}
+              >
+            </Scene>
           </Scene>
         </Router>
       </View>
@@ -324,5 +370,14 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignSelf:'center',
     marginLeft:10
+  },
+  button:{
+    width:20,
+    height:20,
+    marginRight:10
+  },
+  rightText:{
+    fontSize: 14,
+    color:'#fff',
   }
 });

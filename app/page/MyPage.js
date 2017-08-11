@@ -4,7 +4,8 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  TouchableHighlight
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import Button from 'react-native-button';
@@ -43,12 +44,44 @@ export default class MyPage extends Component {
 
   render() {
     const {data} = this.state
+    const tabs = [{
+      title: '待报价',
+      image: require('../image/icon1.png')
+    },{
+      title: '待付款',
+      image: require('../image/icon2.png')
+    },{
+      title: '待出单',
+      image: require('../image/icon3.png')
+    },{
+      title: '已出单',
+      image: require('../image/icon4.png')
+    },{
+      title: '我的订单',
+      image: require('../image/icon4.png')
+    }]
     return (
-      <View style={styles.wrapper}>
-        <View style={styles.headWrap}>
-          <Image source={ data? {uri: data.headPic} : require('../image/head.png')} style={styles.headImg}/>
+      <View>
+        <View style={styles.wrapper}>
+          <TouchableOpacity style={styles.headWrap} onPress={()=>Actions.ChangeHeadPic()}>
+            <Image source={ data? {uri: data.headPic} : require('../image/head.png')} style={styles.headImg}/>
+          </TouchableOpacity>
+          {this.showName()}
         </View>
-        {this.showName()}
+        <View style={{flexDirection:'row',alignItems:'center'}}>
+          {
+            tabs.map((item,index) => {
+              return (
+                <TouchableHighlight key={index} underlayColor="#f5f5f5" style={styles.tabItem}>
+                  <View style={{alignItems:'center'}}>
+                    <Image source={item.image} style={styles.tabIcon}/>
+                    <Text style={styles.tabTit}>{item.title}</Text>
+                  </View>
+                </TouchableHighlight>
+              )
+            })
+          }
+        </View>
       </View>
     );
   }
@@ -88,5 +121,21 @@ const styles = StyleSheet.create({
     width: 120,
     fontSize:14,
     color:'#fff'
+  },
+  tabItem:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'#fff',
+    paddingVertical:10
+  },
+  tabIcon:{
+    width: 30,
+    height: 30
+  },
+  tabTit:{
+    fontSize: 12,
+    color:'#999',
+    paddingTop:5
   }
 });
